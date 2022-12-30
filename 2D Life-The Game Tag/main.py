@@ -61,8 +61,8 @@ multiplayer = False
 intro_menu = True
 settings_menu = False
 
-running = 0
-while running == 0:
+running = True
+while running == True:
   if intro_menu == True:
     screen.blit(intro_text, top_right)
     screen.blit(intro_two_text, top_right_two)
@@ -165,7 +165,7 @@ while running == 0:
       player_death()
       pygame.display.update()
       time.sleep(4)
-      running = 10
+      running = False
     if player_x == 5.0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       pygame.quit()
@@ -182,7 +182,6 @@ while running == 0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       pygame.quit()
       sys.exit()
-    pygame.display.update()
   pygame.display.update()
 quit_game()
 
