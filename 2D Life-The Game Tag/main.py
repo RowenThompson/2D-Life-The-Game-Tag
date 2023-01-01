@@ -31,29 +31,36 @@ blue = (0, 0, 255)
 white = (255, 255, 255)
 colors = [blue, red, green, white]
 
+#help dialogue
+help_dialogue = ("Press H for help | Press W, A, S, D or the arrow keys to move!")
+
 #fonts/rendering text on screen settings
 font = pygame.font.Font('freesansbold.ttf', 38)
 title_font = pygame.font.Font('freesansbold.ttf', 79)
 title_intro_text_location = (width/6, height/25)
 singleplayer_intro_text_location = (width/20, height/6)
 multiplayer_intro_text_location = (width/20, height/4)
-help_intro_text_location = (width/20, height/3)
+settings_intro_text_location = (width/20, height/3)
+help_intro_text_location = (width/20, height/2.5)
+help_dialogue_text_location = (width/23, height/1.3)
 middle_screen = (width/2, height/2)
 bottom_left = (width*0.01, height*0.9)
 top_right = (width/20, height/22)
 top_right_two = (width/20, height/8)
 top_right_three = (width/20, height/5)
 top_right_four = (width/20, height/3.7)
+help_dialogue_text = font.render(help_dialogue, True, white)
 player_death_text = font.render('Player 1 Dead', True, white)
 title_intro_text = title_font.render('2D Life: The Game Tag', True, white)
 singleplayer_intro_text = font.render('Press O for Single Player', True, white)
 multiplayer_intro_text = font.render('Press P for Multi Player', True, white)
+settings_intro_text = font.render('Press S for Settings', True, white)
 help_intro_text = font.render('Press H for help', True, white)
 score_multiplayer_text = font.render('Score: '+str(score), True, white)
 
 #enemy settings
-enemy_y = 300
-enemy_x = 300
+enemy_y = height/1.5
+enemy_x = width/1.5
 enemy_speed = 0.01
 
 #player settings
@@ -61,11 +68,10 @@ player_y = height/2
 player_x = width/2
 player_speed = 10
 
-#help dialogue
-help_dialogue = ("\n Press H for help \n Press W, A, S, D or the arrow keys to move around")
-
 #game stage settings
 game_stage = "intro" #game stage can = "intro", "settings", "singleplayer", and "multiplayer"
+
+print_settings_help = True
 
 running = True
 while running == True:
@@ -73,6 +79,7 @@ while running == True:
     screen.blit(title_intro_text, title_intro_text_location)
     screen.blit(singleplayer_intro_text, singleplayer_intro_text_location)
     screen.blit(multiplayer_intro_text, multiplayer_intro_text_location)
+    screen.blit(settings_intro_text, settings_intro_text_location)
     screen.blit(help_intro_text, help_intro_text_location)
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
@@ -82,10 +89,27 @@ while running == True:
         game_stage = "multiplayer"
       if event.key == pygame.K_o:
         game_stage = "singleplayer"
+      if event.key == pygame.K_s:
+        game_stage = "settings"
       if event.key == pygame.K_ESCAPE:
         quit_game()
       if event.key == pygame.K_h:
-        print(help_dialogue)
+        screen.blit(help_dialogue_text, help_dialogue_text_location)
+  if game_stage == "settings":
+    size = width, height
+    screen = pygame.display.set_mode(size)
+    screen.fill(black)
+    if print_settings_help == True:
+      print("press J for 1000, 500 and N for 1500, 1000")
+      print_settings_help = False
+    for event in pygame.event.get():
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_j:
+          width = 1000
+          height = 500
+        if event.key == pygame.K_n:
+          width = 1500
+          height = 1000
   if game_stage == "singleplayer":
     for event in pygame.event.get():
       if event.type == pygame.KEYDOWN:
@@ -104,7 +128,7 @@ while running == True:
           pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
           player_x += player_speed
         if event.key == pygame.K_h:
-          print(help_dialogue)
+          screen.blit(help_dialogue_text, help_dialogue_text_location)
         if event.key == pygame.K_ESCAPE:
           quit_game()
     pygame.draw.rect(screen, blue, pygame.Rect(player_x, player_y, 45, 45))
@@ -136,14 +160,10 @@ while running == True:
           pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
           player_x += player_speed
         if event.key == pygame.K_h:
-          print(help_dialogue)
+          screen.blit(help_dialogue_text, help_dialogue_text_location)
         if event.key == pygame.K_ESCAPE:
           quit_game()
     #enemy's AI settings in Multiplayer
-    if enemy_ai_y == 1:
-      if enemy_ai_x == 1:
-        player_death()
-        quit_game()
     if enemy_ai_x < 1:
       pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
       enemy_x -= enemy_speed
@@ -162,26 +182,23 @@ while running == True:
       player_death()
       pygame.display.update()
       time.sleep(4)
-      running = False
+      game_stage = "intro"
     if player_x == 5.0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       player_death()
-      pygame.quit()
-      sys.exit()
+      game_stage = "intro"
     if player_x == 705.0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       player_death()
-      pygame.quit()
-      sys.exit()
+      game_stage = "intro"
     if player_y == 20.0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       player_death()
-      pygame.quit()
-      sys.exit()
+      game_stage = "intro"
     if player_y == 580.0:
       print("YOU TOUCHED THE BORDER! YOU LOST!")
       player_death()
-      quit_game()
+      game_stage = "intro"
   pygame.display.update()
 quit_game()
 
