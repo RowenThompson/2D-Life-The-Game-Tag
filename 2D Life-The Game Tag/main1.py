@@ -44,16 +44,14 @@ enemy_speed = 0.01
 player_y = height/2
 player_x = width/2
 player_speed = 10
- 
-singleplayer = False
-multiplayer = False
-show_intro = True
+
+game_stage = "intro" #game stage can = "intro", "settings", "singleplayer", and "multiplayer"
  
 help_dialogue = ("\n Press H for help \n Press E to pause the enemy and Q to start it back up \n Press W, A, S, D or the arrow keys to move around \n Press R to completely remove the enemy")
  
 running = 0
 while running == 0:
-  if show_intro == True:
+  if game_stage == "intro":
     screen.blit(intro_text, top_right)
     screen.blit(intro_two_text, top_right_two)
     screen.blit(intro_three_text, top_right_three)
