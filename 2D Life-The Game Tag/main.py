@@ -1,6 +1,37 @@
-import random, pygame, math, sys, time
+import random, pygame, math, sys, time, buttoncode
 pygame.init()
- 
+
+#button class
+class Button():
+	def __init__(self, x, y, image, scale):
+		width = image.get_width()
+		height = image.get_height()
+		self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.clicked = False
+	def draw(self, surface):
+		action = False
+		#get mouse position
+		pos = pygame.mouse.get_pos()
+		#check mouseover and clicked conditions
+		if self.rect.collidepoint(pos):
+			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+				self.clicked = True
+				action = True
+		if pygame.mouse.get_pressed()[0] == 0:
+			self.clicked = False
+		#draw button on screen
+		surface.blit(self.image, (self.rect.x, self.rect.y))
+		return action
+#button settings
+start_img = pygame.image.load('start_btn.png')
+exit_img = pygame.image.load('exit_btn.png')
+settings_img = pygame.image.load('options_btn.png')
+start_button = buttoncode.Button(650, 550, start_img, 0.4)
+exit_button = buttoncode.Button(650, 750, exit_img, 0.6)
+settings_button = buttoncode.Button(650, 650, settings_img, 0.6)
+
 def quit_game():
   pygame.quit()
   sys.exit()
@@ -76,6 +107,7 @@ print_settings_help = True
 running = True
 while running == True:
   if game_stage == "intro":
+    start_button.draw(screen)
     screen.blit(title_intro_text, title_intro_text_location)
     screen.blit(singleplayer_intro_text, singleplayer_intro_text_location)
     screen.blit(multiplayer_intro_text, multiplayer_intro_text_location)
