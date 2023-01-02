@@ -1,0 +1,7 @@
+username_question = input("What's your name?")
+dob_question = input("When were you born?")
+data = open('data.txt', 'a')
+data.write("\nName:   " + username_question)
+data.write("\nDate of Birth:   " + dob_question)
+data.write("\n----------------------------------")
+data.close()

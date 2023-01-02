@@ -19,6 +19,8 @@ default_width = 1920
 default_height = 1080
 size = width, height = (default_width, default_height)
 screen = pygame.display.set_mode(size)
+clock = pygame.time.Clock()
+fps = 60
 
 #score settings
 score = 0
@@ -36,10 +38,14 @@ play_img = pygame.image.load('play_btn.png')
 exit_img = pygame.image.load('exit_btn.png')
 settings_img = pygame.image.load('options_btn.png')
 nineteentwenty_teneighty_res_settings_img = pygame.image.load('1920_1080_res_settings.png')
+play_local_img = pygame.image.load('play_local_btn.png')
+play_bot_img = pygame.image.load('play_bot_btn.png')
 play_button = buttoncode.Button(width/2.5, height/4.2, play_img, 1)
 exit_button = buttoncode.Button(width/2.5, height/1.8, exit_img, 1)
 settings_button = buttoncode.Button(width/2.5, height/2.5, settings_img, 1)
 nineteentwenty_teneighty_res_settings_button = buttoncode.Button(width/2.5, height/2.5, nineteentwenty_teneighty_res_settings_img, 1)
+play_local_button = buttoncode.Button(width/1.9, height/2.5, play_local_img, 1)
+play_bot_button = buttoncode.Button(width/2.8, height/2.5, play_bot_img, 1)
 
 #help dialogue
 help_dialogue = ("Press H for help | Press W, A, S, D or the arrow keys to move!")
@@ -77,26 +83,37 @@ player_x = width/2
 player_speed = 10
 
 #game stage settings
+main_menu_backround_img = pygame.image.load('game_background_3.1.png')
 def main_menu_stage():
+  screen.blit(main_menu_backround_img, (0.1, 0.1))
   if play_button.draw(screen):
     global game_stage
-    game_stage = "multiplayer"
+    game_stage = "play"
   if exit_button.draw(screen):
     quit_game()
   if settings_button.draw(screen):
     game_stage = "settings"
 
-def settings_stage(screen):
-  width = 1920
-  height = 1080
-  size = width, height
-  #screen = pygame.display.set_mode(size)
-  if nineteentwenty_teneighty_res_settings_button.draw(screen):
-    width = 1920
-    height = 1080
-    size = width, height
+def settings_stage(settings_fill_black):
+  pass
+#   width = 1920
+#   height = 1080
+#   size = width, height
+#   #screen = pygame.display.set_mode(size)
+#   if nineteentwenty_teneighty_res_settings_button.draw(screen):
+#     width = 1920
+#     height = 1080
+#     size = width, height
 
-  screen = pygame.display.set_mode(size)
+#   screen = pygame.display.set_mode(size)
+def play_stage(play_fill_black):
+  if play_fill_black == True:
+    screen.fill(black)
+    play_fill_black = False
+  if play_local_button.draw(screen):
+    print("local")
+  if play_bot_button.draw(screen):
+    print("bot")
   
   
 game_stage = "main_menu" #game stage can = "main_menu", "settings", "play", "play_bot", and "play_local"
@@ -105,12 +122,12 @@ print_settings_help = True
 
 #filling screen black variables
 main_menu_fill_black = True
-singleplayer_fill_black = True
-multiplayer_fill_black = True
+play_fill_black = True
 settings_fill_black = True
 
 running = True
 while running == True:
+  clock.tick(fps)
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       quit_game()
@@ -122,76 +139,75 @@ while running == True:
   if game_stage == "main_menu":
     main_menu_stage()
   if game_stage == "settings":
-    settings_stage()
-  if game_stage == "multiplayer":
-    if multiplayer_fill_black == True:
-      screen.fill(black)
-      multiplayer_fill_black = False
-    #rendering score onto screen in multiplayer mode
-    score_text = font.render('Score: '+str(score), True, white)
-    pygame.draw.rect(screen, black, pygame.Rect(width*0.01, height*0.9, 600, 50))
-    score = score + 0.5
-    screen.blit(score_text, bottom_left)
-    enemy_ai_y = player_y - enemy_y
-    enemy_ai_x = player_x - enemy_x
-    for event in pygame.event.get():
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_g:
-          print(enemy_ai_y)
-        if event.key == pygame.K_q:
-          multiplayer = False
-        if event.key == pygame.K_w:
-          pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
-          player_y -= player_speed
-        if event.key == pygame.K_s:
-          pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
-          player_y += player_speed
-        if event.key == pygame.K_a:
-          pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
-          player_x -= player_speed
-        if event.key == pygame.K_d:
-          pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
-          player_x += player_speed
-        if event.key == pygame.K_h:
-          screen.blit(help_dialogue_text, help_dialogue_text_location)
-        if event.key == pygame.K_ESCAPE:
-          quit_game()
-    #enemy's AI settings in Multiplayer
-    if enemy_ai_x < 1:
-      pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
-      enemy_x -= enemy_speed
-    if enemy_ai_y < 1:
-      pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
-      enemy_y -= enemy_speed
-    if enemy_ai_x > 1:
-      pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
-      enemy_x += enemy_speed
-    if enemy_ai_y > 1:
-      pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
-      enemy_y += enemy_speed
-    player_rect = pygame.draw.rect(screen, blue, pygame.Rect(player_x, player_y, 45, 45))
-    enemy_rect = pygame.draw.rect(screen, red, pygame.Rect(enemy_x, enemy_y, 50, 50))
-    if enemy_rect.colliderect(player_rect):
-      player_death()
-      pygame.display.update()
-      time.sleep(4)
-      game_stage = "intro"
-    if player_x == 5.0:
-      print("YOU TOUCHED THE BORDER! YOU LOST!")
-      player_death()
-      game_stage = "intro"
-    if player_x == 705.0:
-      print("YOU TOUCHED THE BORDER! YOU LOST!")
-      player_death()
-      game_stage = "intro"
-    if player_y == 20.0:
-      print("YOU TOUCHED THE BORDER! YOU LOST!")
-      player_death()
-      game_stage = "intro"
-    if player_y == 580.0:
-      print("YOU TOUCHED THE BORDER! YOU LOST!")
-      player_death()
-      game_stage = "intro"
+    settings_stage(True)
+  if game_stage == "play":
+    play_stage(True)
+
+  #   #rendering score onto screen in multiplayer mode
+  #   score_text = font.render('Score: '+str(score), True, white)
+  #   pygame.draw.rect(screen, black, pygame.Rect(width*0.01, height*0.9, 600, 50))
+  #   score = score + 0.5
+  #   screen.blit(score_text, bottom_left)
+  #   enemy_ai_y = player_y - enemy_y
+  #   enemy_ai_x = player_x - enemy_x
+  #   for event in pygame.event.get():
+  #     if event.type == pygame.KEYDOWN:
+  #       if event.key == pygame.K_g:
+  #         print(enemy_ai_y)
+  #       if event.key == pygame.K_q:
+  #         multiplayer = False
+  #       if event.key == pygame.K_w:
+  #         pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
+  #         player_y -= player_speed
+  #       if event.key == pygame.K_s:
+  #         pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
+  #         player_y += player_speed
+  #       if event.key == pygame.K_a:
+  #         pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
+  #         player_x -= player_speed
+  #       if event.key == pygame.K_d:
+  #         pygame.draw.rect(screen, black, pygame.Rect(player_x, player_y, 50, 50))
+  #         player_x += player_speed
+  #       if event.key == pygame.K_h:
+  #         screen.blit(help_dialogue_text, help_dialogue_text_location)
+  #       if event.key == pygame.K_ESCAPE:
+  #         quit_game()
+  #   #enemy's AI settings in Multiplayer
+  #   if enemy_ai_x < 1:
+  #     pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
+  #     enemy_x -= enemy_speed
+  #   if enemy_ai_y < 1:
+  #     pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
+  #     enemy_y -= enemy_speed
+  #   if enemy_ai_x > 1:
+  #     pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
+  #     enemy_x += enemy_speed
+  #   if enemy_ai_y > 1:
+  #     pygame.draw.rect(screen, black, pygame.Rect(enemy_x, enemy_y, 50, 50))
+  #     enemy_y += enemy_speed
+  #   player_rect = pygame.draw.rect(screen, blue, pygame.Rect(player_x, player_y, 45, 45))
+  #   enemy_rect = pygame.draw.rect(screen, red, pygame.Rect(enemy_x, enemy_y, 50, 50))
+  #   if enemy_rect.colliderect(player_rect):
+  #     player_death()
+  #     pygame.display.update()
+  #     time.sleep(4)
+  #     game_stage = "intro"
+  #   if player_x == 5.0:
+  #     print("YOU TOUCHED THE BORDER! YOU LOST!")
+  #     player_death()
+  #     game_stage = "intro"
+  #   if player_x == 705.0:
+  #     print("YOU TOUCHED THE BORDER! YOU LOST!")
+  #     player_death()
+  #     game_stage = "intro"
+  #   if player_y == 20.0:
+  #     print("YOU TOUCHED THE BORDER! YOU LOST!")
+  #     player_death()
+  #     game_stage = "intro"
+  #   if player_y == 580.0:
+  #     print("YOU TOUCHED THE BORDER! YOU LOST!")
+  #     player_death()
+  #     game_stage = "intro"
   pygame.display.update()
 quit_game()
 
