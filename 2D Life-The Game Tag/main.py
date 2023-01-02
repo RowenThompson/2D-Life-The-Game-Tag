@@ -13,10 +13,10 @@ def player_death():
 #display settings
 game_icon = pygame.image.load("game_icon.png")
 pygame.display.set_icon(game_icon)
-game_name = "2D Life: The Game Tag"
+game_name = "2D Gamer Life: The Game Called Tag"
 pygame.display.set_caption(game_name)
-default_width = 1200
-default_height = 1000
+default_width = 1920
+default_height = 1080
 size = width, height = (default_width, default_height)
 screen = pygame.display.set_mode(size)
 
@@ -32,12 +32,14 @@ white = (255, 255, 255)
 colors = [blue, red, green, white]
 
 #button settings
-start_img = pygame.image.load('start_btn.png')
+play_img = pygame.image.load('play_btn.png')
 exit_img = pygame.image.load('exit_btn.png')
 settings_img = pygame.image.load('options_btn.png')
-start_button = buttoncode.Button(width/2.5, height/4.2, start_img, 1)
+nineteentwenty_teneighty_res_settings_img = pygame.image.load('1920_1080_res_settings.png')
+play_button = buttoncode.Button(width/2.5, height/4.2, play_img, 1)
 exit_button = buttoncode.Button(width/2.5, height/1.8, exit_img, 1)
 settings_button = buttoncode.Button(width/2.5, height/2.5, settings_img, 1)
+nineteentwenty_teneighty_res_settings_button = buttoncode.Button(width/2.5, height/2.5, nineteentwenty_teneighty_res_settings_img, 1)
 
 #help dialogue
 help_dialogue = ("Press H for help | Press W, A, S, D or the arrow keys to move!")
@@ -75,15 +77,29 @@ player_x = width/2
 player_speed = 10
 
 #game stage settings
-def main_menu():
-  if start_button.draw(screen):
+def main_menu_stage():
+  if play_button.draw(screen):
     global game_stage
     game_stage = "multiplayer"
   if exit_button.draw(screen):
     quit_game()
   if settings_button.draw(screen):
     game_stage = "settings"
-game_stage = "main_menu" #game stage can = "main_menu", "settings", and "multiplayer"
+
+def settings_stage(screen):
+  width = 1920
+  height = 1080
+  size = width, height
+  #screen = pygame.display.set_mode(size)
+  if nineteentwenty_teneighty_res_settings_button.draw(screen):
+    width = 1920
+    height = 1080
+    size = width, height
+
+  screen = pygame.display.set_mode(size)
+  
+  
+game_stage = "main_menu" #game stage can = "main_menu", "settings", "play", "play_bot", and "play_local"
 
 print_settings_help = True
 
@@ -95,47 +111,18 @@ settings_fill_black = True
 
 running = True
 while running == True:
-  if game_stage == "main_menu":
-    main_menu()
-    #screen.blit(title_intro_text, title_intro_text_location)
-    #screen.blit(singleplayer_intro_text, singleplayer_intro_text_location)
-    #screen.blit(multiplayer_intro_text, multiplayer_intro_text_location)
-    #screen.blit(settings_intro_text, settings_intro_text_location)
-    #screen.blit(help_intro_text, help_intro_text_location)
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       quit_game()
     if event.type == pygame.KEYDOWN:
-      if event.key == pygame.K_p:
-        game_stage = "multiplayer"
-      if event.key == pygame.K_o:
-        game_stage = "singleplayer"
-      if event.key == pygame.K_s:
-        game_stage = "settings"
       if event.key == pygame.K_ESCAPE:
         quit_game()
       if event.key == pygame.K_h:
         screen.blit(help_dialogue_text, help_dialogue_text_location)
-  #if start_button.draw(screen):
-  #  game_stage = "multiplayer"
+  if game_stage == "main_menu":
+    main_menu_stage()
   if game_stage == "settings":
-    if settings_fill_black == True:
-      screen.fill(black)
-    settings_fill_black = False
-    size = width, height
-    screen = pygame.display.set_mode(size)
-    screen.fill(black)
-    if print_settings_help == True:
-      print("press J for 1000, 500 and N for 1500, 1000")
-    print_settings_help = False
-    for event in pygame.event.get():
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_j:
-          width = 1000
-          height = 500
-        if event.key == pygame.K_n:
-          width = 1500
-          height = 1000
+    settings_stage()
   if game_stage == "multiplayer":
     if multiplayer_fill_black == True:
       screen.fill(black)
