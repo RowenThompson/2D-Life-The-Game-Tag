@@ -1,6 +1,10 @@
 import random, pygame, math, sys, time, buttoncode
 pygame.init()
 
+def draw_text(text, font, text_color, x, y):
+  drawn_text = font.render(text, True, text_color)
+  screen.blit(drawn_text, (x, y))
+
 def quit_game():
   pygame.quit()
   sys.exit()
@@ -15,9 +19,9 @@ game_icon = pygame.image.load("game_icon.png")
 pygame.display.set_icon(game_icon)
 game_name = "2D Gamer Life: The Game Called Tag"
 pygame.display.set_caption(game_name)
-default_width = 1920
-default_height = 1080
-screen_resolution = screen_width, screen_height = (default_width, default_height)
+screen_width = 1000
+screen_height = 500
+screen_resolution = (screen_width, screen_height)
 screen = pygame.display.set_mode(screen_resolution)
 clock = pygame.time.Clock()
 fps = 60
@@ -37,13 +41,13 @@ colors = [blue, red, green, white]
 play_img = pygame.image.load('play_btn.png')
 exit_img = pygame.image.load('exit_btn.png')
 settings_img = pygame.image.load('options_btn.png')
-nineteentwenty_teneighty_res_settings_img = pygame.image.load('1920_1080_res_settings.png')
+hd_res_img = pygame.image.load('1920_1080_res_settings.png')
 play_local_img = pygame.image.load('play_local_btn.png')
 play_bot_img = pygame.image.load('play_bot_btn.png')
 play_button = buttoncode.Button(screen_width/2.5, screen_height/4.2, play_img, 1)
 exit_button = buttoncode.Button(screen_width/2.5, screen_height/1.8, exit_img, 1)
 settings_button = buttoncode.Button(screen_width/2.5, screen_height/2.5, settings_img, 1)
-nineteentwenty_teneighty_res_settings_button = buttoncode.Button(screen_width/2.5, screen_height/2.5, nineteentwenty_teneighty_res_settings_img, 1)
+hd_res_button = buttoncode.Button(screen_width/2.5, screen_height/2.5, hd_res_img, 1)
 play_local_button = buttoncode.Button(screen_width/1.9, screen_height/2.5, play_local_img, 1)
 play_bot_button = buttoncode.Button(screen_width/2.8, screen_height/2.5, play_bot_img, 1)
 
@@ -51,12 +55,9 @@ play_bot_button = buttoncode.Button(screen_width/2.8, screen_height/2.5, play_bo
 help_dialogue = ("Press H for help | Press W, A, S, D or the arrow keys to move!")
 
 #fonts/rendering text on screen settings
-font = pygame.font.Font('freesansbold.ttf', 38)
-title_font = pygame.font.Font('freesansbold.ttf', 79)
+font = pygame.font.SysFont('arialblack', 38)
+title_font = pygame.font.SysFont('arialblack', 79)
 title_intro_text_location = (screen_width/6, screen_height/25)
-multiplayer_intro_text_location = (screen_width/20, screen_height/4)
-settings_intro_text_location = (screen_width/20, screen_height/3)
-help_intro_text_location = (screen_width/20, screen_height/2.5)
 help_dialogue_text_location = (screen_width/23, screen_height/1.3)
 middle_screen = (screen_width/2, screen_height/2)
 bottom_left = (screen_width*0.01, screen_height*0.9)
@@ -66,10 +67,7 @@ top_right_three = (screen_width/20, screen_height/5)
 top_right_four = (screen_width/20, screen_height/3.7)
 help_dialogue_text = font.render(help_dialogue, True, white)
 player_death_text = font.render('Player 1 Dead', True, white)
-title_intro_text = title_font.render('2D Life: The Game Tag', True, white)
-multiplayer_intro_text = font.render('Press P for Multi Player', True, white)
-settings_intro_text = font.render('Press S for Settings', True, white)
-help_intro_text = font.render('Press H for help', True, white)
+title_intro_text = title_font.render('2D Gamer Life: The Game Called Tag', True, white)
 score_multiplayer_text = font.render('Score: '+str(score), True, white)
 
 #enemy settings
@@ -86,6 +84,7 @@ player_speed = 10
 main_menu_backround_img = pygame.image.load('game_background_3.1.png')
 def main_menu_stage():
   screen.blit(main_menu_backround_img, (0.1, 0.1))
+  screen.blit(title_intro_text, title_intro_text_location)
   if play_button.draw(screen):
     global game_stage
     game_stage = "play"
@@ -94,26 +93,25 @@ def main_menu_stage():
   if settings_button.draw(screen):
     game_stage = "settings"
 
-def settings_stage(settings_fill_black):
-  screen_width = screen_width
-  screen_height = screen_height
-  screen_resolution = width, height
+def settings_stage(settings_fill_black, screen_width, screen_height):
+  screen_resolution = screen_width, screen_height
   screen = pygame.display.set_mode(screen_resolution)
   if settings_fill_black == True:
     screen.fill(black)
     settings_fill_black = False
-  if nineteentwenty_teneighty_res_settings_button.draw(screen):
-    width, height = (500, 500)
-    screen_resolution = width, height
+  if hd_res_button.draw(screen):
+    screen_width = 1920
+    screen_height = 1080
+    screen_resolution = (screen_width, screen_height)
     screen = pygame.display.set_mode(screen_resolution)
 def play_stage(play_fill_black):
   if play_fill_black == True:
     screen.fill(black)
     play_fill_black = False
-  if play_local_button.draw(screen):
-    print("local")
-  if play_bot_button.draw(screen):
-    print("bot")
+  # if play_local_button.draw(screen):
+  #   print("local")
+  # if play_bot_button.draw(screen):
+  #   print("bot")
   
   
 game_stage = "main_menu" #game stage can = "main_menu", "settings", "play", "play_bot", and "play_local"
@@ -139,7 +137,7 @@ while running == True:
   if game_stage == "main_menu":
     main_menu_stage()
   if game_stage == "settings":
-    settings_stage(True)
+    settings_stage(True, screen_width, screen_height)
   if game_stage == "play":
     play_stage(True)
 
